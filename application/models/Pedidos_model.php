@@ -25,8 +25,10 @@ class Pedidos_model extends CI_Model {
     }
     
     public function obtenerProductosPedidosAll($pedido) {
+        $this->db->select('pr.Codigo, pr.Nombre, pr.Valor as PrecioUnitario, pp.Cantidad, pp.Valor as TotalProduto, pp.Pedido');
         $this->db->from('Pedidos as p');
         $this->db->join('ProductosPedidos as pp', 'pp.Pedido = p.Codigo');
+        $this->db->join('Productos as pr', 'pp.Producto = pr.Codigo');
         $this->db->where('Pedido', $pedido); 
         $query = $this->db->get();
         if ($query->num_rows() <= 0) {

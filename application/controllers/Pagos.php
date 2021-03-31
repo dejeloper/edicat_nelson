@@ -1179,9 +1179,19 @@ class Pagos extends CI_Controller {
                             //echo "<br><br>";
                             $i = intval($item1['Codigo']);
                             if (array_key_exists($i, $dataPagoPedido)) {
-                                /*$dataProductoPedido = $this->Pedidos_model->obtenerProductosPedidosAll($item1['Pedido']);
-                                var_dump($dataProductoPedido);
-                                die();*/
+                                $dataProductoPedido = $this->Pedidos_model->obtenerProductosPedidosAll($item1['Codigo']); 
+                                //1873 //6061
+                                $productosFacturados = "";
+                                foreach ($dataProductoPedido as $producto) {
+                                    $pos = strpos($productosFacturados, $producto["Nombre"]);
+                                    
+                                    if ($pos === false) {
+                                        if ($productosFacturados != "") {
+                                            $productosFacturados .= ", ";
+                                        }
+                                        $productosFacturados .= $producto["Nombre"];
+                                    }   
+                                } 
                                 
                                 $dataPagosP["Nombre"] = $itemCliente["Nombre"];
                                 $direccion = $itemCliente["Dir"];
@@ -1234,6 +1244,7 @@ class Pagos extends CI_Controller {
                                 $dataPagosP["barrio"] = $barrio; 
                                 $dataPagosP["codCliente"] = $codCliente;
                                 $dataPagosP["PaginaFisica"] = $item1["PaginaFisica"];
+                                $dataPagosP["productos"] = $productosFacturados;
 
                                 $datosPagos[$i] = $dataPagosP;
                             }
@@ -1435,11 +1446,11 @@ class Pagos extends CI_Controller {
                 $btn1 = "";
                 $btn2 = "";
                 $btn3 = "";
-                $btn4 = "";
-                
+                $btn4 = ""; 
+
                 $idPermiso = 25;
                 if (validarPermisoAcciones($idPermiso)) {
-                    $btn1 = '<a href = "#ModalCall" data-toggle = "modal" title = "Reportar Llamada" onclick = "DatosModal(\'' . $item["Pedidos"] . '\', \'' . $item["codCliente"] . '\', \'' . $item["Nombre"] . '\', \'' . $item["Direccion"] . '\', \'' . $item["telefono"] . '\', \'' . $item["barrio"] . '\', \'' . money_format("%.0n", $item["saldo"]) . '\');"><i class = "fa fa-phone" aria-hidden = "true" style = "padding:5px;"></i></a>';
+                    $btn1 = '<a href = "#ModalCall" data-toggle = "modal" title = "Reportar Llamada" onclick = "DatosModal(\'' . $item["Pedidos"] . '\', \'' . $item["codCliente"] . '\', \'' . $item["Nombre"] . '\', \'' . $item["productos"] . '\', \'' . $item["Direccion"] . '\', \'' . $item["telefono"] . '\', \'' . $item["barrio"] . '\', \'' . money_format("%.0n", $item["saldo"]) . '\');"><i class = "fa fa-phone" aria-hidden = "true" style = "padding:5px;"></i></a>';
                 }
                 $idPermiso = 26;
                 if (validarPermisoAcciones($idPermiso)) {
