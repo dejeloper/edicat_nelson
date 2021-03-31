@@ -80,9 +80,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </div>
                             </div>
                             <div class="row" >
-                                <div class="col-md-12">
-                                    <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="form-group">                       
+                                        <label>Nombre:</label>
                                         <input type="text" id="modal-nombre" name="modal-nombre" class="form-control" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">                       
+                                        <label>Productos:</label>
+                                        <input type="text" id="modal-productos" name="modal-productos" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -283,11 +290,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 });
             }
 
-            function DatosModal(pedido, cliente, nombre, direccion, telefono, barrio, saldo) {
+            function DatosModal(pedido, cliente, nombre, productos, direccion, telefono, barrio, saldo) {
                 $('#message').html("");
                 $('#modal-pedido').val(pedido);
                 $('#modal-cliente').val(cliente);
                 $('#modal-nombre').val(nombre);
+                $('#modal-productos').val(productos);
                 $('#modal-Direccion').val(direccion);
                 $('#modal-Telefono').val(telefono);
                 $('#modal-Barrio').val(barrio);
