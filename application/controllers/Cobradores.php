@@ -404,7 +404,7 @@ class Cobradores extends CI_Controller {
                 
                 $idPermiso = 25;
                 if (validarPermisoAcciones($idPermiso)) {
-                    $btn1 = '<a href = "#ModalCall" data-toggle = "modal" title = "Reportar Llamada" onclick = "DatosModal(\'' . $item["Codigo"] . '\', \'' . $item["Pedido"] . '\', \'' . $item["Cliente"] . '\', \'' . $item["Nombre"] . '\', \'' . $item["Direccion"] . '\', \'' . $item["telefono"] . '\');"><i class = "fa fa-phone" aria-hidden = "true" style = "padding:5px;"></i></a>';
+                    $btn1 = '<a href = "#ModalCall" data-toggle = "modal" title = "Reportar Llamada" onclick = "DatosModal(\'' . $item["Codigo"] . '\', \'' . $item["Pedido"] . '\', \'' . $item["Cliente"] . '\', \'' . $item["Nombre"] . '\', \'' . $item["productos"] . '\', \'' . $item["Direccion"] . '\', \'' . $item["telefono"] . '\');"><i class = "fa fa-phone" aria-hidden = "true" style = "padding:5px;"></i></a>';
                 }
 
                 $idPermiso = 26;
@@ -464,6 +464,20 @@ class Cobradores extends CI_Controller {
                 $datacliente = $this->Clientes_model->obtenerClienteDir($value["Cliente"]);
                 $dataCuotas = $this->Pagos_model->obtenerPagosPorPedido($value["Pedido"]);
 
+                $dataProductoPedido = $this->Pedidos_model->obtenerProductosPedidosAll($value["Pedido"]); 
+                //'1873' //6061
+                $productosFacturados = "";
+                foreach ($dataProductoPedido as $producto) {
+                    $pos = strpos($productosFacturados, $producto["Nombre"]);
+
+                    if ($pos === false) {
+                        if ($productosFacturados != "") {
+                            $productosFacturados .= ", ";
+                        }
+                        $productosFacturados .= $producto["Nombre"];
+                    }   
+                }
+
                 $direccion = $datacliente[0]["Dir"];
                 $direccion = ($datacliente[0]["Etapa"] != "") ? $direccion . " ET " . $datacliente[0]["Etapa"] : $direccion;
                 $direccion = ($datacliente[0]["Torre"] != "") ? $direccion . " TO " . $datacliente[0]["Torre"] : $direccion;
@@ -494,7 +508,8 @@ class Cobradores extends CI_Controller {
                     "Fecha" => date("d/m/Y", strtotime($value["Fecha"])),
                     "FechaCreacion" => $value["FechaCreacion"],
                     "Motivo" => $value["Motivo"],
-                    "PaginaFisica" => $dataPedido[0]["PaginaFisica"]
+                    "PaginaFisica" => $dataPedido[0]["PaginaFisica"],
+                    "productos" => $productosFacturados
                 );
                 $data[$i] = $datos;
                 $i++;
