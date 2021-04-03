@@ -1369,7 +1369,7 @@ class Pagos extends CI_Controller {
                         foreach ($dataPedido as $item1) {
                             $i = intval($item1['Codigo']);
                             if (array_key_exists($i, $dataPagoPedido)) {
-                                $dataProductoPedido = $this->Pedidos_model->obtenerProductosPedidosAll('6061'); 
+                                $dataProductoPedido = $this->Pedidos_model->obtenerProductosPedidosAll($item1['Codigo']); 
                                 //'1873' //6061
                                 $productosFacturados = "";
                                 foreach ($dataProductoPedido as $producto) {
