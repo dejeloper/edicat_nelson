@@ -154,7 +154,7 @@ class Clientes_model extends CI_Model {
     }
 
     public function obtenerClienteDir($cliente) {
-        $this->db->select('c.*, td.Nombre as TipDocNombre, e.Nombre as EstNombre, d.Codigo as Coddir, d.Direccion as Dir, d.Etapa, d.Torre, d.Apartamento, d.Manzana, d.Interior, d.Casa, d.Barrio as Barrio, d.TipoVivienda');
+        $this->db->select('c.*, td.Nombre as TipDocNombre, e.Nombre as EstNombre, d.Codigo as Coddir, d.Direccion as Dir, d.Etapa, d.Torre, d.Apartamento, d.Manzana, d.Interior, d.Casa, d.Barrio as Barrio, d.Zona, d.TipoVivienda');
         $this->db->from('Clientes as c');
         $this->db->join('TiposDocumentos as td', 'c.TipoDocumento = td.Codigo');
         $this->db->join('Estados as e', 'c.Estado = e.Codigo');

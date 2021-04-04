@@ -102,13 +102,29 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Barrio *</label>
                                         <input type="text" <?php if (!$accion) echo "readonly"; ?> style="background-color: #fff;" placeholder="Barrio" value="<?= $Listadatos[0]["Barrio"]; ?>" class="form-control required" maxlength="30" id="Barrio" name="Barrio">
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-4">
+                                    <div class="form-group">
+                                        <label>Zona *</label>
+                                        <select name="Zona" <?php if (!$accion) echo "disabled = 'true'"; ?> style="background-color: #fff;" id="Zona" class="form-control required">
+                                            <?php
+                                            foreach ($Lista7 as $item) {
+                                                if ($item['Codigo'] == $Listadatos[0]["Zona"]) {
+                                                    echo '<option selected="selected" value="' . $item['Codigo'] . '">' . $item['Nombre'] . '</option>';
+                                                } else {
+                                                    echo '<option value="' . $item['Codigo'] . '">' . $item['Nombre'] . '</option>';
+                                                }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>                                    
+                                </div>
+                                <div class="col-sm-4">
                                     <div class="form-group">
                                         <label>Tipo de Vivienda *</label>
                                         <select name="TipoVivienda" <?php if (!$accion) echo "disabled = 'true'"; ?> style="background-color: #fff;" id="TipoVivienda" class="form-control required">
@@ -589,6 +605,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 var cli_int = $('#Interior').val();
                 var cli_casa = $('#Casa').val();
                 var cli_bar = $('#Barrio').val();
+                var cli_zona = $('#Zona option:selected').val();
                 var cli_tipviv = $('#TipoVivienda option:selected').val();
                 if (cli_cod.toString().length <= 0) {
                     $('#message').html(
@@ -611,51 +628,59 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                         <strong>Error</strong><br />Indique un Barrio válido\n\
                                     </div>');
                         } else {
-                            if (cli_tipviv.toString().length <= 0) {
+                            if (cli_zona.toString().length <= 0) {
+                                $('#message').html(
+                                        '<div class="alert alert-danger alert-dismissable fade in">\n\
+                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>\n\
+                                            <strong>Error</strong><br />Seleccione la zona\n\
+                                        </div>');
+                            } else {
+                                if (cli_tipviv.toString().length <= 0) {
                                 $('#message').html(
                                         '<div class="alert alert-danger alert-dismissable fade in">\n\
                                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>\n\
                                             <strong>Error</strong><br />Seleccione el tipo de Vivienda\n\
                                         </div>');
-                            } else {
-                                $('#message').html("");
-                                var method = "<?= base_url(); ?>Clientes/UpdateClientDir/";
-                                $("body").css({
-                                    'cursor': 'wait'
-                                })
-                                $.ajax({
-                                    type: 'post',
-                                    url: method,
-                                    data: {cli_cod: cli_cod, cli_dir: cli_dir, cli_eta: cli_eta, cli_tor: cli_tor, cli_apto: cli_apto, cli_manz: cli_manz, cli_int: cli_int, cli_casa: cli_casa, cli_bar: cli_bar, cli_tipviv: cli_tipviv},
-                                    cache: false,
-                                    beforeSend: function () {
-                                        $('#message').html("");
-                                        $('#btn-ubicacion').html('<i class="fa fa-save"></i> Actualizando...');
-                                    },
-                                    success: function (data) {
-                                        $('#btn-ubicacion').html('<i class="fa fa-save"></i> Actualizar Dirección');
-                                        if (data == 1) {
-                                            $('#message').html(
-                                                    '<div class="alert alert-success alert-dismissable fade in">\n\
-                                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>\n\
-                                                        <strong>Se actualizó la información del cliente <b>' + cli_nom + '</b></strong>\n\
-                                                    </div>');
-                                            location.reload();
-                                        } else {
-                                            $('#message').html(
-                                                    '<div class="alert alert-danger alert-dismissable fade in">\n\
-                                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>\n\
-                                                        <strong>Error</strong><br />' + data + '\n\
-                                                    </div>');
+                                } else {
+                                    $('#message').html("");
+                                    var method = "<?= base_url(); ?>Clientes/UpdateClientDir/";
+                                    $("body").css({
+                                        'cursor': 'wait'
+                                    })
+                                    $.ajax({
+                                        type: 'post',
+                                        url: method,
+                                        data: {cli_cod: cli_cod, cli_dir: cli_dir, cli_eta: cli_eta, cli_tor: cli_tor, cli_apto: cli_apto, cli_manz: cli_manz, cli_int: cli_int, cli_casa: cli_casa, cli_bar: cli_bar, cli_zona: cli_zona, cli_tipviv: cli_tipviv},
+                                        cache: false,
+                                        beforeSend: function () {
+                                            $('#message').html("");
+                                            $('#btn-ubicacion').html('<i class="fa fa-save"></i> Actualizando...');
+                                        },
+                                        success: function (data) {
+                                            $('#btn-ubicacion').html('<i class="fa fa-save"></i> Actualizar Dirección');
+                                            if (data == 1) {
+                                                $('#message').html(
+                                                        '<div class="alert alert-success alert-dismissable fade in">\n\
+                                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>\n\
+                                                            <strong>Se actualizó la información del cliente <b>' + cli_nom + '</b></strong>\n\
+                                                        </div>');
+                                                location.reload();
+                                            } else {
+                                                $('#message').html(
+                                                        '<div class="alert alert-danger alert-dismissable fade in">\n\
+                                                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>\n\
+                                                            <strong>Error</strong><br />' + data + '\n\
+                                                        </div>');
+                                            }
                                         }
-                                    }
 
-                                });
-                                $("body").css({
-                                    'cursor': 'Default'
-                                })
+                                    });
+                                    $("body").css({
+                                        'cursor': 'Default'
+                                    })
 
-                                return false;
+                                    return false;
+                                }
                             }
                         }
                     }

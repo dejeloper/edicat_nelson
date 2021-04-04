@@ -105,13 +105,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-4">
                                                 <div class="form-group">
                                                     <label>Barrio *</label>
                                                     <input type="text" placeholder="Barrio" value="" class="form-control required" maxlength="30" id="Barrio" name="Barrio">
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-4">
+                                                <div class="form-group">
+                                                    <label>Zona *</label>
+                                                    <select name="Zona" id="Zona" class="form-control required">
+                                                        <option value=""></option>
+                                                        <?php
+                                                        foreach ($Lista9 as $item):
+                                                            echo '<option value="' . $item['Codigo'] . '">' . $item['Nombre'] . '</option>';
+                                                        endforeach;
+                                                        ?>
+                                                    </select>
+                                                </div>                                    
+                                            </div>
+                                            <div class="col-sm-4">
                                                 <div class="form-group">
                                                     <label>Tipo de Vivienda *</label>
                                                     <select name="TipoVivienda" id="TipoVivienda" class="form-control required">
@@ -405,6 +418,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     var cli_bar = $('form[name=FrmNuevoCliente] input[name=Barrio]')[0].value.trim();
                     var e_tipviv = document.getElementById("TipoVivienda");
                     var cli_tipviv = e_tipviv.options[e_tipviv.selectedIndex].value;
+                    var e_zona = document.getElementById("Zona");
+                    var cli_zona = e_zona.options[e_zona.selectedIndex].value;
                     var cli_tel1 = $('form[name=FrmNuevoCliente] input[name=Telefono1]')[0].value.trim();
                     var cli_tel2 = $('form[name=FrmNuevoCliente] input[name=Telefono2]')[0].value.trim();
                     var cli_tel3 = $('form[name=FrmNuevoCliente] input[name=Telefono3]')[0].value.trim();
@@ -471,7 +486,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             url: method,
                             data: {
                                 cli_nom: cli_nom, cli_tipdoc: cli_tipdoc, cli_doc: cli_doc,
-                                cli_dir: cli_dir, cli_eta: cli_eta, cli_tor: cli_tor, cli_apto: cli_apto, cli_manz: cli_manz, cli_int: cli_int, cli_casa: cli_casa, cli_bar: cli_bar, cli_tipviv: cli_tipviv,
+                                cli_dir: cli_dir, cli_eta: cli_eta, cli_tor: cli_tor, cli_apto: cli_apto, cli_manz: cli_manz, cli_int: cli_int, cli_casa: cli_casa, cli_bar: cli_bar, cli_zona: cli_zona, cli_tipviv: cli_tipviv,
                                 cli_tel1: cli_tel1, cli_tel2: cli_tel2, cli_tel3: cli_tel3,
                                 cli_numRef: ref,
                                 cli_nomrf1: cli_nomrf1, cli_telrf1: cli_telrf1, cli_paren1: cli_paren1,

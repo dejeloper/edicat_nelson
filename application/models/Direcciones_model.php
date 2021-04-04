@@ -83,6 +83,16 @@ class Direcciones_model extends CI_Model {
         }
     }
 
+    public function obtenerZonas() {
+        $this->db->where('Habilitado', '1');
+        $query = $this->db->get("Zonas");
+        if ($query->num_rows() <= 0) {
+            return false;
+        } else {
+            return $query->result_array();
+        }
+    }
+
 }
 
 ?>

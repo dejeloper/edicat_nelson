@@ -283,31 +283,39 @@ class Clientes extends CI_Controller {
                         if (isset($dataVendedores) && $dataVendedores != FALSE) {
                             $dataEventos = $this->Eventos_model->obtenerEventosIGLBARR();
                             if (isset($dataEventos) && $dataEventos != FALSE) {
-                                $iglesias = array("");
-                                foreach ($dataEventos as $value) {
-                                    array_push($iglesias, $value["Iglesia"]);
-                                }
-                                $iglesias = array_unique($iglesias);
-                                $barrios = array("");
-                                foreach ($dataEventos as $value) {
-                                    array_push($barrios, $value["Barrio"]);
-                                }
-                                $barrios = array_unique($barrios);
+                                $dataZonas = $this->Direcciones_model->obtenerZonas();
+                                if (isset($dataZonas) && $dataZonas != FALSE) {
+                            
+                                    $iglesias = array("");
+                                    foreach ($dataEventos as $value) {
+                                        array_push($iglesias, $value["Iglesia"]);
+                                    }
+                                    $iglesias = array_unique($iglesias);
+                                    $barrios = array("");
+                                    foreach ($dataEventos as $value) {
+                                        array_push($barrios, $value["Barrio"]);
+                                    }
+                                    $barrios = array_unique($barrios);
 
-                                $data = new stdClass();
-                                $data->Controller = "Clientes";
-                                $data->title = "Creación de Cliente";
-                                $data->subtitle = "Cliente/Pedido Nuevo";
-                                $data->contenido = $this->viewControl . '/Crear';
-                                $data->Lista1 = $dataTipDoc;
-                                $data->Lista2 = $dataTiposVivienda;
-                                $data->Lista4 = $dataProductos;
-                                $data->Lista5 = $dataTarifas;
-                                $data->Lista6 = $dataVendedores;
-                                $data->Lista7 = json_encode($iglesias);
-                                $data->Lista8 = json_encode($barrios);
+                                    $data = new stdClass();
+                                    $data->Controller = "Clientes";
+                                    $data->title = "Creación de Cliente";
+                                    $data->subtitle = "Cliente/Pedido Nuevo";
+                                    $data->contenido = $this->viewControl . '/Crear';
+                                    $data->Lista1 = $dataTipDoc;
+                                    $data->Lista2 = $dataTiposVivienda;
+                                    $data->Lista4 = $dataProductos;
+                                    $data->Lista5 = $dataTarifas;
+                                    $data->Lista6 = $dataVendedores;
+                                    $data->Lista7 = json_encode($iglesias);
+                                    $data->Lista8 = json_encode($barrios);
+                                    $data->Lista9 = $dataZonas;
 
-                                $this->load->view('frontend', $data);
+                                    $this->load->view('frontend', $data);
+                                } else {
+                                    $this->session->set_flashdata("error", "No se tienen datos sobre 'Zonas'");
+                                    redirect(base_url("/Mantenimiento/Zonas/Admin/"));
+                                }
                             } else {
                                 $this->session->set_flashdata("error", "No se tienen datos sobre 'Eventos'");
                                 redirect(base_url("/Eventos/Admin/"));
@@ -351,6 +359,7 @@ class Clientes extends CI_Controller {
             $cli_int = trim($this->input->post('cli_int'));
             $cli_casa = trim($this->input->post('cli_casa'));
             $cli_bar = ucwords(strtolower(trim($this->input->post('cli_bar'))));
+            $cli_zona = trim($this->input->post('cli_zona'));
             $cli_tipviv = trim($this->input->post('cli_tipviv'));
             //Telefonos
             $cli_tel1 = trim($this->input->post('cli_tel1'));
@@ -451,6 +460,7 @@ class Clientes extends CI_Controller {
                     "Interior" => $cli_int,
                     "Casa" => $cli_casa,
                     "Barrio" => $cli_bar,
+                    "Zona" => $cli_zona,
                     "TipoVivienda" => $cli_tipviv,
                     "Habilitado" => 1,
                     "UsuarioCreacion" => $user,
@@ -939,25 +949,32 @@ class Clientes extends CI_Controller {
                                 if (isset($dataVendedores) && $dataVendedores != FALSE) {
                                     $dataEventos = $this->Eventos_model->obtenerEvento($dataPedido[0]["Evento"]);
                                     if (isset($dataEventos) && $dataEventos != FALSE) {
+                                        $dataZonas = $this->Direcciones_model->obtenerZonas();
+                                        if (isset($dataZonas) && $dataZonas != FALSE) {
+ 
+                                            $data = new stdClass();
+                                            $data->Controller = "Clientes";
+                                            $data->title = "Datos Cliente";
+                                            $data->subtitle = "Cliente";
+                                            $data->contenido = $this->viewControl . '/Consultar';
+                                            $data->cliente = $cliente;
+                                            $data->pedido = $pedido;
 
-                                        $data = new stdClass();
-                                        $data->Controller = "Clientes";
-                                        $data->title = "Datos Cliente";
-                                        $data->subtitle = "Cliente";
-                                        $data->contenido = $this->viewControl . '/Consultar';
-                                        $data->cliente = $cliente;
-                                        $data->pedido = $pedido;
+                                            $data->Listadatos = $dataClientes;
+                                            $data->Lista1 = $dataTipDoc;
+                                            $data->Lista2 = $dataTiposVivienda;
+                                            $data->Lista3 = $dataProdPedido;
+                                            $data->Lista4 = $dataRef;
+                                            $data->Lista5 = $dataVendedores;
+                                            $data->Lista6 = $dataEventos;
+                                            $data->PaginaFisica = $dataPedido[0]["PaginaFisica"];
+                                            $data->Lista7 = $dataZonas;
 
-                                        $data->Listadatos = $dataClientes;
-                                        $data->Lista1 = $dataTipDoc;
-                                        $data->Lista2 = $dataTiposVivienda;
-                                        $data->Lista3 = $dataProdPedido;
-                                        $data->Lista4 = $dataRef;
-                                        $data->Lista5 = $dataVendedores;
-                                        $data->Lista6 = $dataEventos;
-                                        $data->PaginaFisica = $dataPedido[0]["PaginaFisica"];
-
-                                        $this->load->view('frontend', $data);
+                                            $this->load->view('frontend', $data);
+                                        } else {
+                                            $this->session->set_flashdata("error", "No se tienen datos sobre 'Zonas'");
+                                            redirect(base_url("/Mantenimiento/Zonas/Admin/"));
+                                        }
                                     } else {
                                         $this->session->set_flashdata("error", "No se tienen datos sobre 'Eventos'");
                                         redirect(base_url("/Eventos/Admin/"));
@@ -1056,6 +1073,7 @@ class Clientes extends CI_Controller {
                     $cli_int = trim($this->input->post('cli_int'));
                     $cli_casa = trim($this->input->post('cli_casa'));
                     $cli_bar = ucwords(strtolower(trim($this->input->post('cli_bar'))));
+                    $cli_zona = trim($this->input->post('cli_zona'));
                     $cli_tipviv = trim($this->input->post('cli_tipviv'));
                     //Datos Auditoría
                     $user = $this->session->userdata('Usuario');
@@ -1071,6 +1089,7 @@ class Clientes extends CI_Controller {
                         "Interior" => $cli_int,
                         "Casa" => $cli_casa,
                         "Barrio" => $cli_bar,
+                        "Zona" => $cli_zona,
                         "TipoVivienda" => $cli_tipviv,
                         "Habilitado" => 1,
                         "UsuarioModificacion" => $user,
